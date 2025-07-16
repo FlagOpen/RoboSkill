@@ -3,9 +3,9 @@ numpy==1.23.5
 scipy==1.9.3
 torch==2.6.0
 torchaudio==2.6.0
-torchvision==0.22.1
+torchvision==0.21.0
 Robotic-Arm==1.0.6
-pyrealsense2==2.54.1.5684
+pyrealsense2==2.55.1.6486
 opencv-python==4.6.0.66
 
 --e git+https://github.com/IDEA-Research/GroundingDINO.git@856dde20aee659246248e20734ef9ba5214f5e44#egg=groundingdino
