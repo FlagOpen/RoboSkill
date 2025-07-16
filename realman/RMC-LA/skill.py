@@ -15,11 +15,11 @@ from Robotic_Arm.rm_robot_interface import RoboticArm, rm_thread_mode_e
 
 # chassis
 chassis_host = "127.0.0.1"
-chassis_port = "5000"
+chassis_port = 5000
 
 # arm
 arm_host = "127.0.0.1"
-arm_port = "5000"
+arm_port = 5000
 speed = 20
 radius = 0
 connect = 0
@@ -339,7 +339,7 @@ class RealmanArm:
 
 
 # Initialize FastMCP server
-mcp = FastMCP("robots")
+mcp = FastMCP("robots", stateless_http=True, host="0.0.0.0", port=8000)
 
 
 @mcp.tool()
@@ -370,6 +370,11 @@ def navigate_to_target(marker_name: str) -> dict:
     )
 
 
+dino = Dino()
+camera = Camera()
+arm = RealmanArm(arm_host, arm_port, speed, radius, connect, block)
+
+
 @mcp.tool()
 def grasp_object(object: str):
     """
@@ -382,14 +387,11 @@ def grasp_object(object: str):
         str: A message indicating whether the grasping operation succeeded or failed.
     """
 
-    dino = Dino()
-    camera = Camera()
-    arm = RealmanArm(arm_host, arm_port, speed, radius, connect, block)
-
     arm.observe()
     color_path, depth_path = camera.record_wrist_frame()
     boxes, _ = dino.predict(color_path, object)
-    if not boxes:
+
+    if boxes is None or boxes.numel() == 0:
         return f"{object} not found."
 
     uv = [int(x) for x in boxes[0][:2].numpy()]
@@ -397,10 +399,10 @@ def grasp_object(object: str):
     extrinsics = dino.transform_camera2base(gripper_pose)
     xyz = dino.uv_to_xyz(uv, depth_path, extrinsics)
 
-    grasp_pose = xyz.tolist() + [0, 0, 3.1]
-    grasp_pose[0] -= 0.04
-    grasp_pose[1] += 0.06
-    grasp_pose[2] -= 0.1
+    grasp_pose = xyz.tolist() + [1.57, -1.5707, 1.5]
+    grasp_pose[0] -= 0.09
+    grasp_pose[1] += 0.01
+    grasp_pose[2] -= 0.05
 
     success = arm.grasp(grasp_pose)
     camera.shutdown()
@@ -409,4 +411,4 @@ def grasp_object(object: str):
 
 if __name__ == "__main__":
     # Initialize and run the server
-    mcp.run(transport="stdio")
+    mcp.run(transport="streamable-http")
