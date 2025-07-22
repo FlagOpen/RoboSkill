@@ -22,8 +22,36 @@ This project provides skill services for a Realman robot, including object grasp
 ---
 
 ## ⚙️ Installation
+You can run the project using either **Docker** (recommended) or directly from the **source code**.
 
-### 1. Clone the repo
+
+### 🚀 Option 1: Using Docker (Recommended)
+
+1. **Pull the prebuilt Docker image:**
+
+```bash
+docker pull flagrelease-registry.cn-beijing.cr.aliyuncs.com/flagrelease/flagrelease:realman-rmc-la-d345
+
+```
+
+2. **Launch the container:**
+```bash
+docker run -it \
+  -e CHASSIS_HOST=127.0.0.1 \   
+  -e CHASSIS_PORT=5000 \
+  -e ARM_HOST=127.0.0.1 \
+  -e ARM_PORT=8080 \
+  -v /dev:/dev \
+  --device-cgroup-rule "c 81:* rmw" \
+  --device-cgroup-rule "c 189:* rmw" \
+  -p 8000:8000 \
+  realman-rmc-la-d345:latest
+```
+
+
+### 🧩 Option 2: Run from Source Code
+
+1. **Clone the repository**
 
 ```bash
 git clone https://github.com/FlagOpen/RoboSkill
@@ -32,15 +60,14 @@ cd RoboSkill/realman/RMC-LA
 
 ```
 
-### 2. Install dependencies
-
-We recommend using a fresh virtual environment (e.g. with conda or venv):
-
+2. **(Optional) Setup conda environment**
+It is recommended to use a fresh virtual environment (e.g., with Conda or venv). Then install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Install GroundingDINO
+3. **Install GroundingDINO**
+
 ```bash
 git clone https://github.com/IDEA-Research/GroundingDINO.git
 
@@ -49,27 +76,27 @@ cd GroundingDINO
 pip install -e .
 
 ```
-Download the weights:
+4. **Download the weights:**
 ```bash
 mkdir weights
 wget https://huggingface.co/IDEA-Research/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth -P weights/
 ```
 
-## 🔧 Configuration
+5. **🔧 Configuration**
 Before running, you must configure IP and port settings in `skill.py`:
 
 ```bash
-# chassis
-chassis_host = "127.0.0.1"   # 🔁 Set to actual robot chassis IP
+# Chassis configuration
+chassis_host = "127.0.0.1"   # 🔁 Replace with your chassis IP address
 chassis_port = 5000
 
-# arm
-arm_host = "127.0.0.1"       # 🔁 Set to actual robotic arm IP
+# Robotic arm configuration
+arm_host = "127.0.0.1"       # 🔁 Replace with your arm IP address
 arm_port = 5000
 
 ```
 
-## 🚀 Running the Service
+5. 🚀 Running the Service
 ```bash
 python skill.py
 ```
