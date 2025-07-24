@@ -328,7 +328,7 @@ class RealmanArm:
     def grasp(self, pose):
         self.robot.rm_set_gripper_release(500, True, 10)
         self.robot.rm_movej_p(pose, self.v, self.r, self.connect, self.block)
-        pose[0] += 0.025
+        # pose[0] += 0.025
         self.robot.rm_movej_p(pose, self.v, self.r, self.connect, self.block)
         self.robot.rm_set_gripper_position(5, False, 5)
         time.sleep(1)
@@ -401,11 +401,10 @@ def grasp_object(object: str):
 
     grasp_pose = xyz.tolist() + [1.57, -1.5707, 1.5]
     grasp_pose[0] -= 0.09
-    grasp_pose[1] += 0.01
-    grasp_pose[2] -= 0.05
+    grasp_pose[1] += 0.015
+    grasp_pose[2] -= 0.0
 
     success = arm.grasp(grasp_pose)
-    camera.shutdown()
     return f"'{object}' has been {'successfully' if success == 'ok' else 'failed'}  grasped"
 
 
