@@ -79,7 +79,10 @@ pip install -e .
 4. **Download the weights:**
 ```bash
 mkdir weights
-wget https://huggingface.co/IDEA-Research/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth -P weights/
+
+cd weights
+
+wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 ```
 
 5. **🔧 Configuration**
